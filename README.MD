@@ -17,5 +17,5 @@
 
 - Teacher Create and manage posts 
 - Teacher create and manage campaigns
-- Teachers can create courses
+- Teachers can create coursesgit
 
