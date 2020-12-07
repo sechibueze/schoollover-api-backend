@@ -39,7 +39,7 @@ const signup = (req, res) => {
         newUser.save(err => {
           if (err) return res.status(500).json({ status: false, error: 'Server error:: Failed to save user' });
 
-          const link = `${process.env.CLIENT}/api/auth/${ newUser._id}/account_confirmation`
+          const link = `${process.env.CLIENT}/auth/${ newUser._id}/account-confirmation`
           const msg = {
               to: email,
               from: process.env.SENDER_MAIL,
@@ -77,15 +77,11 @@ const signup = (req, res) => {
             { expiresIn: 60*60*3 },
             (err, token) => {
               if (err) return res.status(500).json({ status: false, error: 'Server error:: Failed to generate token' });
-              
+              let emailSent = false;
               EmailService.send(msg)
-                // .then(response => {
-                //   return res.status(201).json({
-                //     status: true,
-                //     message: `User signup successful`,
-                //     data: token
-                //   });
-                // })
+                .then(response => {
+                  emailSent = true;
+                })
                 // .catch(err => {
                 //   return res.status(500).json({
                 //     status: false,
@@ -96,7 +92,7 @@ const signup = (req, res) => {
                   
                   return res.status(201).json({
                     status: true,
-                    message: 'User signup successful',
+                    message: `User signup successful ${ emailSent ? 'Check your mail' : ''}`,
                     token
                   });
                 })
@@ -163,6 +159,7 @@ const getAuthenticatedUserData = (req, res) => {
         email: user.email,
         profileImage: user.profileImage,
         active: user.active,
+        accountConfirmation: user.confirmation
       };
       return res.status(200).json({
         status: true,
@@ -205,7 +202,7 @@ const confirmUserAccount = (req, res) => {
 }
 
 /*** Send an email so user can follow link to reset passord */
-const requestPasswordRestToken = (req, res) => {
+const requestPasswordResetToken = (req, res) => {
   const errorsContainer = validationResult(req);
   if (!errorsContainer.isEmpty()) {
     return res.status(422).json({
@@ -232,7 +229,7 @@ const requestPasswordRestToken = (req, res) => {
           });
         }
 
-        const link = `${process.env.CLIENT}/auth/${ user.passwordResetToken }/reset-password`
+        const link = `${process.env.CLIENT}/auth/reset-password/${ user.passwordResetToken }`
         const msg = {
             to: email,
             from: process.env.SENDER_MAIL,
@@ -423,7 +420,7 @@ module.exports = {
   login, 
   getAuthenticatedUserData,
   confirmUserAccount,
-  requestPasswordRestToken,
+  requestPasswordResetToken,
   resetAuthPassword,
   toggleAdminAuth
 };

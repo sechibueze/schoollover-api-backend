@@ -5,10 +5,6 @@ const router = express.Router();
 const AuthRoutes = require('./AuthRoutes');
 
 router.use('/auth', AuthRoutes);
-router.use('/', (req, res) => {
-  return res.json({
-    message: 'Calling api'
-  })
-});
+
 
 module.exports = router;

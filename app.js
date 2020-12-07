@@ -1,5 +1,8 @@
 const express = require('express');
+const cors = require('cors');
+const morgan = require('morgan');
 const { config } = require('dotenv');
+cors();
 config(); /*** Load environment variable(s) into process.env ***/
 const app = express();
 
@@ -7,8 +10,10 @@ const app = express();
 const dbConnection = require('./src/config/db.config');
 dbConnection();
 
+app.use(morgan('dev'));
 /*** Allow express to parse request body */
 app.use(express.json({ extended: true }));
+
 
 /*** set Request Header configuration/CORS */
 app.use((req, res, next) => {

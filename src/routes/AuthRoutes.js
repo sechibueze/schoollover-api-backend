@@ -7,7 +7,7 @@ const {
   login,
   getAuthenticatedUserData,
   confirmUserAccount,
-  requestPasswordRestToken,
+  requestPasswordResetToken,
   resetAuthPassword,
   toggleAdminAuth
 } = require('../controllers/AuthControllers');
@@ -58,7 +58,7 @@ router.get('/:id/account_confirmation', confirmUserAccount);
  */
 router.put('/request-password-reset-token', [
   check('email', 'Email is required').isEmail(),
-], requestPasswordRestToken);
+], requestPasswordResetToken);
 
 /***
  * @route PUT /api/auth/reset-auth-password
