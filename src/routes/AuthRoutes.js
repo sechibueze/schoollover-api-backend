@@ -9,7 +9,9 @@ const {
   confirmUserAccount,
   requestPasswordResetToken,
   resetAuthPassword,
-  toggleAdminAuth
+  toggleAdminAuth,
+  getUsers,
+  deleteUsers
 } = require('../controllers/AuthControllers');
 
 /*** Forward all requests to /api/auth here */
@@ -78,5 +80,20 @@ router.put('/reset-auth-password', [
 router.put('/update-auth', [
   check('email', 'Email is required').isEmail(),
 ], toggleAdminAuth);
+
+
+
+/***
+ * @route PUT /api/auth/update-auth
+ * @desc Allow Any valid user to update/toggle his Auth level
+ * @access public/secret
+ */
+router.get('/users', getUsers);
+/***
+ * @route PUT /api/auth/update-auth
+ * @desc Allow Any valid user to update/toggle his Auth level
+ * @access public/secret
+ */
+router.delete('/users', deleteUsers);
 
 module.exports = router;

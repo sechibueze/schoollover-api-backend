@@ -159,6 +159,7 @@ const getAuthenticatedUserData = (req, res) => {
         email: user.email,
         profileImage: user.profileImage,
         active: user.active,
+        auth: user.auth,
         accountConfirmation: user.confirmation
       };
       return res.status(200).json({
@@ -415,6 +416,67 @@ const toggleAdminAuth = (req, res) => {
 
 }
 
+/****Allow authenticated Mmeber to see  project */
+const getUsers = (req, res) => {
+  let filter = {};
+  const { id } = req.query;
+  if(id) filter._id = id;
+
+  // const currentUserId = req.authUser.id;
+  User
+      .find(filter)
+      .then(users => {
+         
+          return res.status(200).json({
+              status: true,
+              message: 'project deleted',
+              data: users
+          })
+
+      }).catch(err => {
+          if (err) {
+              return res.status(500).json({
+                  status: false,
+                  error: 'Internal Server error'
+              })
+          }
+      })
+};
+/****Allow authenticated ADMIN to delete  project */
+const deleteUsers = (req, res) => {
+  let filter = {};
+  const { id } = req.query;
+  if(id) filter._id = id;
+
+  // const currentUserId = req.authUser.id;
+  User
+      .find(filter)
+      .then( users => {
+          console.log('users to delete', users)
+
+          const result = users.map(async user => {
+             await user.remove();
+           })
+          // User.deleteMany(filter, (err, prevUser) => {
+          //     if (err) {
+          //         return res.status(500).json({
+          //             status: false,
+          //             error: 'Internal Server error'
+          //         })
+          //     }
+
+              return res.status(200).json({
+                  status: true,
+                  message: 'Users deleted',
+                  data: result
+              })
+          // })
+
+
+      })
+};
+
+
 module.exports = {
   signup,
   login, 
@@ -422,5 +484,8 @@ module.exports = {
   confirmUserAccount,
   requestPasswordResetToken,
   resetAuthPassword,
-  toggleAdminAuth
+  toggleAdminAuth,
+
+  getUsers,
+  deleteUsers,
 };
